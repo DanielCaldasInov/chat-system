@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
         ]);
 
+        $middleware->redirectUsersTo(fn () => route('chat.index'));
         //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
