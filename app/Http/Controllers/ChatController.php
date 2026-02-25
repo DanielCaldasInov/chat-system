@@ -27,4 +27,22 @@ class ChatController extends Controller
             'messages' => $messages
         ]);
     }
+
+    public function store(Request $request, Room $room)
+    {
+        $request->validate([
+            'body' => ['required', 'string', 'max:2000'],
+        ]);
+
+        if (!$room->users->contains($request->user())) {
+            abort(403, 'Não tens acesso a esta sala.');
+        }
+
+        $room->messages()->create([
+            'body' => $request->body,
+            'user_id' => $request->user()->id,
+        ]);
+
+        return back();
+    }
 }

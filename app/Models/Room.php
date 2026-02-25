@@ -16,6 +16,8 @@ class Room extends Model
         'name',
         'avatar',
         'reference',
+        'body',
+        'user_id',
     ];
 
     public function users() : BelongsToMany

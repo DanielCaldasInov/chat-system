@@ -21,8 +21,8 @@ Route::get('/dashboard', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
-
     Route::get('/chat/{room}', [ChatController::class, 'show'])->name('chat.show');
+    Route::post('/chat/{room}/messages', [ChatController::class, 'store'])->name('messages.store');
 });
 
 Route::middleware('auth')->group(function () {

@@ -26,8 +26,17 @@ onMounted(() => scrollToBottom());
 
 const submitMessage = () => {
     if (!form.body.trim()) return;
-    alert("Vais enviar: " + form.body + "\n\n(A rota de envio será configurada a seguir!)");
-    form.reset('body');
+
+    form.post(route('messages.store', props.currentRoom.id), {
+        preserveScroll: true,
+        onSuccess: () => {
+            form.reset('body');
+
+            setTimeout(() => {
+                scrollToBottom();
+            }, 50);
+        },
+    });
 };
 
 const formatTime = (dateString) => {
