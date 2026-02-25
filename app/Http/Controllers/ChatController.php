@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MessageSent;
 use App\Models\Room;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -38,10 +39,14 @@ class ChatController extends Controller
             abort(403, 'Não tens acesso a esta sala.');
         }
 
-        $room->messages()->create([
+        $message = $room->messages()->create([
             'body' => $request->body,
             'user_id' => $request->user()->id,
         ]);
+
+        $message->load('user');
+
+        broadcast(new MessageSent($message))->toOthers();
 
         return back();
     }

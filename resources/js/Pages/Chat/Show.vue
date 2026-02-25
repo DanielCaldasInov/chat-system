@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue'; // <-- AQUI ESTÁ A CORREÇÃO (computed importado)
+import { ref, onMounted, onUnmounted, watch, computed } from 'vue';
 import { Head, usePage, useForm } from '@inertiajs/vue3';
 import ChatLayout from '@/Layouts/ChatLayout.vue';
 
@@ -16,13 +16,33 @@ const form = useForm({
 
 const messagesContainer = ref(null);
 
+const localMessages = ref([...props.messages]);
+
+watch(() => props.messages, (newMessages) => {
+    localMessages.value = [...newMessages];
+    setTimeout(() => scrollToBottom(), 50);
+});
+
 const scrollToBottom = () => {
     if (messagesContainer.value) {
         messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
     }
 };
 
-onMounted(() => scrollToBottom());
+onMounted(() => {
+    scrollToBottom();
+
+    window.Echo.private(`chat.room.${props.currentRoom.id}`)
+        .listen('MessageSent', (e) => {
+            localMessages.value.push(e.message);
+
+            setTimeout(() => scrollToBottom(), 50);
+        });
+});
+
+onUnmounted(() => {
+    window.Echo.leave(`chat.room.${props.currentRoom.id}`);
+});
 
 const submitMessage = () => {
     if (!form.body.trim()) return;
@@ -31,10 +51,7 @@ const submitMessage = () => {
         preserveScroll: true,
         onSuccess: () => {
             form.reset('body');
-
-            setTimeout(() => {
-                scrollToBottom();
-            }, 50);
+            setTimeout(() => scrollToBottom(), 50);
         },
     });
 };
@@ -59,7 +76,7 @@ const roomName = computed(() => {
         </div>
 
         <div class="flex-1 overflow-y-auto p-6 space-y-6 bg-white" ref="messagesContainer">
-            <div v-for="message in messages" :key="message.id" class="flex items-start group">
+            <div v-for="message in localMessages" :key="message.id" class="flex items-start group">
                 <div class="w-10 h-10 rounded-full bg-gray-100 border border-gray-200 flex-shrink-0 flex items-center justify-center font-bold text-gray-600 mr-4">
                     {{ message.user.name.charAt(0) }}
                 </div>
