@@ -28,6 +28,10 @@ class User extends Authenticatable
         'status',
     ];
 
+    protected $appends = [
+        'avatar_url',
+    ];
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -49,6 +53,11 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function getAvatarUrlAttribute()
+    {
+        return $this->avatar ? asset('storage/' . $this->avatar) : null;
     }
 
     public function rooms() : BelongsToMany

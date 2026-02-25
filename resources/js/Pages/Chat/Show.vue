@@ -76,17 +76,53 @@ const roomName = computed(() => {
         </div>
 
         <div class="flex-1 overflow-y-auto p-6 space-y-6 bg-white" ref="messagesContainer">
-            <div v-for="message in localMessages" :key="message.id" class="flex items-start group">
-                <div class="w-10 h-10 rounded-full bg-gray-100 border border-gray-200 flex-shrink-0 flex items-center justify-center font-bold text-gray-600 mr-4">
-                    {{ message.user.name.charAt(0) }}
-                </div>
-                <div class="flex-1">
-                    <div class="flex items-baseline mb-1">
-                        <span class="font-bold text-sm mr-2 text-gray-900">{{ message.user.name }}</span>
-                        <span class="text-xs text-gray-400 ml-2">{{ formatTime(message.created_at) }}</span>
+            <div
+                v-for="message in localMessages"
+                :key="message.id"
+                class="flex items-start mb-4"
+                :class="{ 'flex-row-reverse': message.user_id === user.id }"
+            >
+                <div
+                    class="flex-shrink-0"
+                    :class="message.user_id === user.id ? 'ml-3' : 'mr-3'"
+                >
+                    <img
+                        v-if="message.user.avatar_url"
+                        :src="message.user.avatar_url"
+                        class="h-10 w-10 rounded-full object-cover shadow-sm"
+                        :alt="message.user.name"
+                    />
+                    <div
+                        v-else
+                        class="h-10 w-10 rounded-full bg-gray-800 flex items-center justify-center text-white font-bold text-sm uppercase shadow-sm"
+                    >
+                        {{ message.user.name.charAt(0) }}
                     </div>
-                    <div class="text-gray-700 text-[15px] leading-relaxed whitespace-pre-wrap">
+                </div>
+
+                <div
+                    class="max-w-[70%] px-4 py-2 rounded-lg shadow-sm"
+                    :class="[
+            message.user_id === user.id
+                ? 'bg-blue-600 text-white rounded-tr-none'
+                : 'bg-white text-gray-800 rounded-tl-none border border-gray-100'
+        ]"
+                >
+                    <div
+                        v-if="message.user_id !== user.id"
+                        class="text-xs font-bold mb-1 opacity-75"
+                    >
+                        {{ message.user.name }}
+                    </div>
+
+                    <p class="text-sm leading-relaxed break-words">
                         {{ message.body }}
+                    </p>
+
+                    <div
+                        class="text-[10px] mt-1 text-right opacity-70"
+                    >
+                        {{ formatTime(message.created_at) }}
                     </div>
                 </div>
             </div>

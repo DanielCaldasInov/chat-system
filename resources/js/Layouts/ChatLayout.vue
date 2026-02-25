@@ -111,11 +111,20 @@ const getRoomName = (room) => {
                     class="flex items-center space-x-2 w-full hover:bg-gray-200/75 p-2 rounded-lg transition-colors focus:outline-none"
                     :class="{'bg-gray-200/75': showUserMenu}"
                 >
-                    <span class="w-7 h-7 rounded-full bg-gray-800 flex items-center justify-center text-xs font-bold text-white uppercase flex-shrink-0">
-                        {{ user.name.charAt(0) }}
+                    <img
+                        v-if="$page.props.auth.user.avatar_url"
+                        :src="$page.props.auth.user.avatar_url"
+                        class="w-7 h-7 rounded-full object-cover shadow-sm flex-shrink-0"
+                        alt="User Avatar"
+                    />
+                    <span
+                        v-else
+                        class="w-7 h-7 rounded-full bg-gray-800 flex items-center justify-center text-xs font-bold text-white uppercase flex-shrink-0"
+                    >
+                        {{ $page.props.auth.user.name.charAt(0) }}
                     </span>
                                     <span class="flex-1 truncate text-sm font-medium text-gray-700 text-left">
-                        {{ user.name }}
+                        {{ $page.props.auth.user.name }}
                     </span>
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 transition-transform duration-200 flex-shrink-0" :class="{'rotate-180': showUserMenu}" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
