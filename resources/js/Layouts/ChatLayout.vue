@@ -89,6 +89,7 @@ onUnmounted(() => {
     document.removeEventListener('click', closeRoomDropdown);
     window.removeEventListener('scroll', closeRoomDropdown, true);
 });
+
 </script>
 
 <template>
@@ -139,7 +140,14 @@ onUnmounted(() => {
                 </div>
 
                 <div>
-                    <h3 class="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2">Pings</h3>
+                    <div class="flex items-center justify-between px-3 mb-2">
+                        <h3 class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Pings</h3>
+                        <Link :href="route('chat.direct.new')" class="text-gray-400 hover:text-indigo-600 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                            </svg>
+                        </Link>
+                    </div>
 
                     <div v-if="directRooms.length > 0" class="space-y-0.5">
                         <div v-for="room in directRooms" :key="room.id" class="relative group mb-1">
