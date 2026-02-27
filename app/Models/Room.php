@@ -21,6 +21,13 @@ class Room extends Model
         'avatar_url',
     ];
 
+    protected static function booted()
+    {
+        static::deleting(function ($room) {
+            $room->messages()->delete();
+        });
+    }
+
     public function users() : BelongsToMany
     {
         return $this->belongsToMany(User::class);

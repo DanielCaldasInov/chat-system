@@ -146,7 +146,8 @@ const closeModal = () => {
                                         :class="{ 'opacity-25': form.processing }"
                                         :disabled="form.processing"
                                     >
-                                        Save Changes
+                                        <span v-if="form.processing">Processing...</span>
+                                        <span v-else>Save Changes</span>
                                     </PrimaryButton>
                                 </div>
                             </div>

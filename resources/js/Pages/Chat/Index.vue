@@ -4,7 +4,7 @@ import ChatLayout from '@/Layouts/ChatLayout.vue';
 </script>
 
 <template>
-    <Head title="InovChat" />
+    <Head title="Chat" />
     <ChatLayout>
         <div class="flex-1 flex items-center justify-center bg-gray-50/50 h-full">
             <div class="text-center max-w-sm px-4">

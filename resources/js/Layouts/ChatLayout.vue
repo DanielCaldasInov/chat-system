@@ -8,7 +8,7 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 
 const page = usePage();
 const user = page.props.auth.user;
-const rooms = computed(() => page.props.rooms);
+const rooms = computed(() => page.props.rooms || []);
 
 const groupRooms = computed(() => rooms.value.filter(room => room.type === 'group'));
 const directRooms = computed(() => rooms.value.filter(room => room.type === 'direct'));
@@ -106,9 +106,9 @@ onUnmounted(() => {
 
                 <div>
                     <h3 class="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2">Rooms</h3>
-                    <div class="space-y-0.5">
-                        <div v-for="room in groupRooms" :key="room.id" class="relative group mb-1">
 
+                    <div v-if="groupRooms.length > 0" class="space-y-0.5">
+                        <div v-for="room in groupRooms" :key="room.id" class="relative group mb-1">
                             <div
                                 class="flex items-center justify-between px-3 py-1.5 text-sm font-medium rounded-lg transition-colors cursor-pointer"
                                 :class="route().current('chat.show', room.id) ? 'bg-gray-200 text-gray-900' : 'text-gray-700 hover:bg-gray-200/50 hover:text-gray-900'"
@@ -130,13 +130,19 @@ onUnmounted(() => {
                             </div>
                         </div>
                     </div>
+
+                    <div v-else class="mx-2 px-3 py-3 border border-dashed border-gray-300 rounded-xl bg-gray-50/50">
+                        <p class="text-[11px] text-gray-500 text-center leading-relaxed">
+                            No rooms joined yet.
+                        </p>
+                    </div>
                 </div>
 
                 <div>
                     <h3 class="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2">Pings</h3>
-                    <div class="space-y-0.5">
-                        <div v-for="room in directRooms" :key="room.id" class="relative group mb-1">
 
+                    <div v-if="directRooms.length > 0" class="space-y-0.5">
+                        <div v-for="room in directRooms" :key="room.id" class="relative group mb-1">
                             <div
                                 class="flex items-center justify-between px-3 py-1.5 text-sm font-medium rounded-lg transition-colors cursor-pointer"
                                 :class="route().current('chat.show', room.id) ? 'bg-gray-200 text-gray-900' : 'text-gray-700 hover:bg-gray-200/50 hover:text-gray-900'"
@@ -160,6 +166,12 @@ onUnmounted(() => {
                                 </button>
                             </div>
                         </div>
+                    </div>
+
+                    <div v-else class="mx-2 px-3 py-3 border border-dashed border-gray-300 rounded-xl bg-gray-50/50">
+                        <p class="text-[11px] text-gray-500 text-center leading-relaxed">
+                            No active conversations.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -251,9 +263,7 @@ onUnmounted(() => {
                 @click.stop
             >
                 <div class="py-1">
-
                     <template v-if="activeRoom.type === 'group'">
-
                         <template v-if="$page.props.auth.user.is_admin">
                             <Link :href="route('admin.rooms.edit', activeRoom.id)" class="block px-4 py-2 text-xs font-medium text-gray-700 hover:bg-gray-100 hover:text-indigo-600 transition-colors">
                                 Edit Room
@@ -278,7 +288,6 @@ onUnmounted(() => {
                             Delete Chat
                         </button>
                     </template>
-
                 </div>
             </div>
         </transition>
@@ -292,10 +301,9 @@ onUnmounted(() => {
             <p class="mt-1 text-sm text-gray-600">
                 This action will permanently delete the room and all of its messages. This action cannot be undone.
             </p>
-            <div class="mt-6 flex justify-end">
+            <div class="mt-6 flex justify-end gap-3">
                 <SecondaryButton @click="closeModal"> Cancel </SecondaryButton>
                 <DangerButton
-                    class="ml-3"
                     :class="{ 'opacity-25': deleteForm.processing }"
                     :disabled="deleteForm.processing"
                     @click="deleteRoom"
