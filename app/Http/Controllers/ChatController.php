@@ -50,4 +50,11 @@ class ChatController extends Controller
 
         return back();
     }
+
+    public function leave(Room $room)
+    {
+        $room->users()->detach(auth()->id());
+
+        return redirect()->route('chat.index')->with('message', 'You have left the room.');
+    }
 }
